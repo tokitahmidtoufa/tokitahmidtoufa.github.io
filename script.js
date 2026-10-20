@@ -36,8 +36,8 @@ const siteData = {
     focus: "Product vision / Platform building / Curriculum planning / Learning experience design / Brand / Strategy"
   }],
   education: [
-    ["Jashore Shikkha Board Govt. Model School And College", "High School Diploma, Science", "Sep 2026 – Mar 2028"],
-    ["Dawood Public School And College", "High School Graduation, Science · GPA 5.00 / 5.00", "Jan 2017 – Jun 2026"],
+    ["Jashore Shikkha Board Govt. Model School And College", "Advanced High School Diploma, Science", "Sep 2026 – Mar 2028"],
+    ["Dawood Public School And College", "High School Diploma, Science · GPA 5.00 / 5.00", "Jan 2017 – Jun 2026"],
     ["Sacred Heart Secondary School", "Primary Education", "Jan 2011 – Dec 2016"]
   ],
   skills: [
