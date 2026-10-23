@@ -1,0 +1,499 @@
+/* =========================================================
+   GALLERY — "Beyond the Achievements" + gallery.html
+   Loaded after style.css. Reuses its design tokens
+   (--bg, --surf, --tx, --mut, --bd, --acc, --pur, --grad, --glow, --glow2)
+   so dark and light themes work automatically.
+   Everything is namespaced with .gl / .lbx to avoid touching other sections.
+========================================================= */
+
+/* ---------- filter chips ---------- */
+.gl-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 clamp(20px, 2.6vw, 28px);
+}
+.gl-filters[hidden] {
+  display: none;
+}
+.gl-chip {
+  font: 500 0.82rem "DM Sans", system-ui, sans-serif;
+  padding: 7px 15px;
+  min-height: 36px;
+  border: 1px solid var(--bd);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--mut);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+.gl-chip:hover {
+  color: var(--tx);
+  border-color: var(--acc);
+}
+.gl-chip[aria-pressed="true"] {
+  background: var(--grad);
+  border-color: transparent;
+  color: #fff;
+}
+
+/* ---------- grid ----------
+   A 6-column grid. script.js sets data-layout on .gl from the number of photos
+   actually displayed, so every count fills its rows with no gaps:
+     one   1 wide card              two  2 halves             trio  featured + 2 stacked
+     quad  2 x 2                    six  featured + 2 stacked + 3 across
+     r0 / r1 / r2  (7+ photos, and 5): rows of three; r1 opens with one wide card,
+                   r2 opens with two half-width cards
+   data-odd (1 when the count is odd) is used by the 2-column tablet layout. */
+.gl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: var(--gl-row, clamp(220px, 23vw, 290px));
+  grid-auto-flow: dense;
+  gap: clamp(12px, 1.6vw, 18px);
+}
+.gl > li {
+  grid-column: span 2;
+  min-width: 0;
+  min-height: 0;
+}
+.gl[data-layout="one"] {
+  --gl-row: clamp(260px, 36vw, 460px);
+}
+.gl[data-layout="one"] > li {
+  grid-column: 1 / -1;
+}
+.gl[data-layout="two"],
+.gl[data-layout="quad"] {
+  --gl-row: clamp(240px, 27vw, 350px);
+}
+.gl[data-layout="two"] > li,
+.gl[data-layout="quad"] > li {
+  grid-column: span 3;
+}
+.gl[data-layout="trio"] > li:first-child,
+.gl[data-layout="six"] > li:first-child {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+.gl[data-layout="r1"] > li:first-child {
+  grid-column: 1 / -1;
+  grid-row: span 2;
+}
+.gl[data-layout="r2"] > li:nth-child(-n + 2) {
+  grid-column: span 3;
+}
+
+/* ---------- card ---------- */
+.gl-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  text-align: left;
+  color: #f8fafc;
+  font: inherit;
+  background: var(--surf);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  cursor: zoom-in;
+  isolation: isolate;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.25s,
+    box-shadow 0.35s;
+}
+.gl-card:hover,
+.gl-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--acc);
+  box-shadow:
+    0 26px 50px -26px var(--glow2),
+    0 0 0 1px color-mix(in srgb, var(--acc) 40%, transparent);
+}
+.gl-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: -2;
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.gl-card:hover img,
+.gl-card:focus-visible img {
+  transform: scale(1.06);
+}
+/* readable caption scrim (always dark, so text contrast holds in both themes) */
+.gl-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 17, 32, 0) 42%,
+    rgba(11, 17, 32, 0.92)
+  );
+  pointer-events: none;
+}
+.gl-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  gap: 4px;
+  padding: clamp(14px, 2vw, 20px);
+}
+.gl-cap small {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+.gl-cap strong {
+  font: 600 clamp(1rem, 0.9rem + 0.3vw, 1.12rem) / 1.25 Poppins, sans-serif;
+  letter-spacing: -0.01em;
+}
+/* larger title on the featured / wide first card */
+.gl[data-layout="one"] > li:first-child .gl-cap strong,
+.gl[data-layout="trio"] > li:first-child .gl-cap strong,
+.gl[data-layout="six"] > li:first-child .gl-cap strong,
+.gl[data-layout="r1"] > li:first-child .gl-cap strong {
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.6rem);
+}
+.gl-yr {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 3px 10px;
+  font: 500 0.74rem "DM Sans", sans-serif;
+  color: #f8fafc;
+  background: rgba(11, 17, 32, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 99px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.gl-zm {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: var(--grad);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+.gl-card:hover .gl-zm,
+.gl-card:focus-visible .gl-zm {
+  opacity: 1;
+  transform: none;
+}
+@media (hover: none) {
+  .gl-zm {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- graceful fallback when a file is missing ---------- */
+.gl-ph {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: none;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  background:
+    radial-gradient(70% 70% at 50% 30%, var(--glow), transparent),
+    var(--surf);
+}
+.gl-ph b {
+  font: 700 clamp(2rem, 5vw, 3rem) Poppins, sans-serif;
+  letter-spacing: -0.04em;
+  color: transparent;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.8;
+}
+.gl-ph small {
+  font-size: 0.8rem;
+  color: var(--mut);
+}
+.gl-card.missing img {
+  display: none;
+}
+.gl-card.missing .gl-ph {
+  display: grid;
+}
+
+/* ---------- "View All Photos" button (homepage) ---------- */
+.gl-more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(22px, 3vw, 32px);
+}
+.gl-more[hidden] {
+  display: none;
+}
+
+/* ---------- gallery.html page header ---------- */
+.gl-page {
+  padding-top: clamp(40px, 5vw, 72px);
+}
+.gl-title {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.gl-page .hd {
+  max-width: 60ch;
+}
+.gl-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 clamp(18px, 2.4vw, 26px);
+}
+.gl-nav.end {
+  justify-content: center;
+  margin: clamp(26px, 3.4vw, 40px) 0 0;
+}
+
+/* ---------- responsive ---------- */
+/* tablet: two columns; an odd count opens with one full-width card so no row is left short */
+@media (max-width: 1023px) {
+  .gl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gl[data-layout] {
+    --gl-row: clamp(220px, 34vw, 300px);
+  }
+  .gl[data-layout="one"] {
+    --gl-row: clamp(240px, 52vw, 420px);
+  }
+  .gl[data-layout] > li:nth-child(n) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .gl[data-odd="1"] > li:first-child {
+    grid-column: 1 / -1;
+  }
+}
+/* phone: single column */
+@media (max-width: 599px) {
+  .gl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gl[data-layout],
+  .gl[data-layout="one"] {
+    --gl-row: clamp(230px, 66vw, 340px);
+  }
+  .gl[data-odd="1"] > li:first-child {
+    grid-column: auto;
+  }
+  .gl-more .btn {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   LIGHTBOX
+========================================================= */
+html.lb-open,
+html.lb-open body {
+  overflow: hidden;
+}
+.lbx {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: clamp(56px, 8svh, 72px) clamp(16px, 7vw, 96px) clamp(16px, 4svh, 32px);
+  background: rgba(5, 8, 20, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #f8fafc;
+  overscroll-behavior: contain;
+  animation: lbin 0.25s ease-out;
+}
+.lbx[hidden] {
+  display: none;
+}
+@keyframes lbin {
+  from {
+    opacity: 0;
+  }
+}
+.lb-fig {
+  margin: 0;
+  max-width: min(1100px, 100%);
+  max-height: 100%;
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  cursor: default;
+}
+.lb-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.lb-media img {
+  display: block;
+  max-width: 100%;
+  max-height: 68svh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 40px 90px -30px #000;
+  background: #0b1120;
+}
+.lb-miss {
+  display: none;
+  width: min(560px, 80vw);
+  aspect-ratio: 4 / 3;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+.lbx.miss .lb-media img {
+  display: none;
+}
+.lbx.miss .lb-miss {
+  display: grid;
+}
+.lbx figcaption {
+  width: min(680px, 100%);
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+.lbx figcaption small {
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+.lbx figcaption h3 {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  color: #f8fafc;
+}
+.lbx figcaption p {
+  margin: 2px 0 0;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+.lb-count {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+}
+.lb-btn {
+  position: absolute;
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+.lb-btn:hover {
+  background: var(--pur);
+  border-color: transparent;
+}
+.lb-btn:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 3px;
+}
+.lb-btn[hidden] {
+  display: none;
+}
+.lb-x {
+  top: clamp(12px, 2.4svh, 20px);
+  right: clamp(12px, 2.4vw, 24px);
+}
+.lb-n {
+  top: 50%;
+  margin-top: -22px;
+}
+.lb-prev {
+  left: clamp(10px, 2vw, 24px);
+}
+.lb-next {
+  right: clamp(10px, 2vw, 24px);
+}
+.lb-btn svg {
+  width: 20px;
+  height: 20px;
+}
+@media (max-width: 767px) {
+  .lbx {
+    padding-inline: 12px;
+  }
+  .lb-n {
+    top: auto;
+    bottom: clamp(14px, 3svh, 24px);
+    margin-top: 0;
+  }
+  .lbx figcaption {
+    padding-bottom: 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-card,
+  .gl-card img,
+  .gl-zm,
+  .lb-btn {
+    transition: none !important;
+  }
+  .gl-card:hover,
+  .gl-card:focus-visible {
+    transform: none;
+  }
+  .gl-card:hover img,
+  .gl-card:focus-visible img {
+    transform: none;
+  }
+  .lbx {
+    animation: none;
+  }
+}
