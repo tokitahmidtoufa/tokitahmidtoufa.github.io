@@ -82,7 +82,7 @@ const siteData = {
       category: "Teamwork & Celebrations", year: "" }
   ],
   journey: [
-    ["2017", "Secondary Education"], ["2022", "Mathematics Olympiad"],
+    ["2022", "Mathematics Olympiad"],
     ["2023", "Python / Programming"], ["2025", "National AI Olympiad"], ["2026", "Tirovers"],
     ["NOW", "AI/ML + Technology + Entrepreneurship"]
   ],
