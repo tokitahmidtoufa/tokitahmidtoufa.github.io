@@ -39,7 +39,7 @@ const siteData = {
   }],
   education: [
     ["Jashore Shikkha Board Govt. Model School And College", "High School Diploma, Science", "Sep 2026 – Mar 2028"],
-    ["Dawood Public School And College", "Lower Secondary Education, Science · GPA 5.00 / 5.00", "Jan 2017 – Jun 2026"],
+    ["Dawood Public School And College", "Secondary Education, Science · GPA 5.00 / 5.00", "Jan 2017 – Jun 2026"],
   ],
   skills: [
     ["Programming", ["Python", "C", "C++"]],
@@ -75,11 +75,16 @@ const siteData = {
       title: "House Champions",
       caption: "Holding the trophy after our house won the annual sports competition.",
       category: "Awards & Achievements", year: "" },
+    { src: "assets/ssc.webp",
+      alt: "Team photograph from the annual sports competition and award ceremony",
+      title: "Outstanding Academic Achievement",
+      caption: "Awarded a commemorative crest by my institution's Brigadier General Chairman for achieving a perfect GPA of 5.00/5.00 in Secondary Education.",
+      category: "Academic Excellence", year: "" },
     { src: "assets/annual-sports-parade.webp",
       alt: "Team photograph from the annual sports competition and award ceremony",
       title: "Team Celebration",
       caption: "Celebrating together with the team at the annual sports competition and award ceremony.",
-      category: "Teamwork & Celebrations", year: "" }
+      category: "Teamwork & Celebrations", year: "" },
   ],
   journey: [
     ["2022", "Mathematics Olympiad"],
