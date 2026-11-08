@@ -68,7 +68,7 @@ const siteData = {
     { src: "assets/annual-sports-team-celebration.webp",
       alt: "Toki Tahmid Toufa leading his school's house team in the annual sports parade",
       title: "Leading the House Parade",
-      caption: "Leading my school's house team during the annual sports parade — responsibility, pride, and teamwork in motion.",
+      caption: "Leading my school's house contingent during the annual sports parade and presenting a salute to the Major General — a proud moment of leadership, discipline, honour, and responsibility.",
       category: "Leadership", year: "" },
     { src: "assets/house-champion-trophy.webp",
       alt: "Toki Tahmid Toufa holding the trophy after his house won the annual sports competition",
